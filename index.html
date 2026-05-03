@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Torneo Mundial 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #0a0e1a; }
+
+    .wc-root {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0a0e1a 0%, #0d1525 50%, #0a1228 100%);
+      color: #e8eaf6;
+      font-family: 'DM Sans', sans-serif;
+      padding: 0 0 60px;
+    }
+
+    /* HERO */
+    .wc-hero {
+      position: relative;
+      text-align: center;
+      padding: 48px 24px 32px;
+      overflow: hidden;
+    }
+    .wc-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255,210,0,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .wc-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      letter-spacing: 4px;
+      color: #fff;
+      text-shadow: 0 0 40px rgba(255,210,0,0.3);
+      line-height: 1;
+    }
+    .wc-subtitle {
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #ffd200;
+      margin-top: 6px;
+      font-weight: 500;
+    }
+    .wc-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,210,0,0.1);
+      border: 1px solid rgba(255,210,0,0.25);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 0.72rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #ffd200;
+      margin-top: 16px;
+    }
+
+    /* MODE TOGGLE */
+    .mode-toggle {
+      display: inline-flex;
+      gap: 0;
+      margin: 20px auto 0;
+      border: 1px solid rgba(255,210,0,0.35);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .mode-btn {
+      padding: 9px 24px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      background: transparent;
+      color: rgba(255,210,0,0.5);
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .mode-btn.active {
+      background: rgba(255,210,0,0.18);
+      color: #ffd200;
+    }
+    .mode-btn:hover:not(.active) { background: rgba(255,210,0,0.07); color: rgba(255,210,0,0.75); }
+    .mode-btn + .mode-btn { border-left: 1px solid rgba(255,210,0,0.25); }
+
+    /* SLIDER */
+    .slider-wrap {
+      width: 320px;
+      max-width: 90vw;
+      margin: 20px auto 0;
+      padding: 14px 20px 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 6px;
+    }
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 8px;
+    }
+    .slider-center-label {
+      text-align: center;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,210,0,0.5);
+    }
+    input[type=range] {
+      width: 100%;
+      appearance: none;
+      height: 4px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, rgba(100,160,255,0.6), rgba(255,210,0,0.6));
+      outline: none;
+      cursor: pointer;
+      margin: 6px 0 4px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: #ffd200;
+      box-shadow: 0 0 6px rgba(255,210,0,0.6);
+      cursor: pointer;
+    }
+    input[type=range]::-moz-range-thumb {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: #ffd200;
+      border: none;
+      cursor: pointer;
+    }
+    .slider-val {
+      text-align: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      color: #ffd200;
+      margin-top: 2px;
+    }
+
+    .sim-btn {
+      display: block;
+      margin: 20px auto 0;
+      padding: 14px 48px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 3px;
+      background: linear-gradient(135deg, #ffd200, #ff8c00);
+      color: #0a0e1a;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 24px rgba(255,210,0,0.3);
+    }
+    .sim-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(255,210,0,0.45); }
+    .sim-btn:active { transform: translateY(0); }
+    .sim-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+    .sim-count { margin-top: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.25); letter-spacing: 2px; }
+
+    /* AUTHOR */
+    .author-credit {
+      margin-top: 10px;
+      font-size: 0.68rem;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.28);
+      font-style: italic;
+    }
+
+    /* PROGRESS */
+    .progress-wrap {
+      width: 260px;
+      margin: 16px auto 0;
+      height: 4px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #ffd200, #ff8c00);
+      border-radius: 2px;
+      transition: width 0.1s linear;
+    }
+    .progress-label {
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.3);
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      padding: 24px 16px 0;
+      flex-wrap: wrap;
+    }
+    .tab {
+      padding: 8px 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: transparent;
+      color: rgba(255,255,255,0.5);
+      border-radius: 3px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: all 0.15s;
+    }
+    .tab.active {
+      background: rgba(255,210,0,0.15);
+      border-color: rgba(255,210,0,0.5);
+      color: #ffd200;
+    }
+    .tab:hover:not(.active) { border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.8); }
+
+    .section { padding: 24px 16px 0; max-width: 1100px; margin: 0 auto; }
+
+    /* TOP 4 PODIUM CARDS */
+    .top4-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 700px) { .top4-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .top4-card {
+      border-radius: 8px;
+      padding: 24px 16px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+    }
+    .top4-card.rank-1 { background: linear-gradient(160deg,rgba(255,210,0,0.14),rgba(255,140,0,0.06)); border-color: rgba(255,210,0,0.4); }
+    .top4-card.rank-2 { background: linear-gradient(160deg,rgba(192,192,220,0.1),rgba(150,150,180,0.04)); border-color: rgba(192,192,220,0.3); }
+    .top4-card.rank-3 { background: linear-gradient(160deg,rgba(180,120,60,0.1),rgba(140,90,40,0.04)); border-color: rgba(180,120,60,0.3); }
+
+    .top4-rank { font-family:'Bebas Neue',sans-serif; font-size:0.8rem; letter-spacing:3px; opacity:0.5; margin-bottom:8px; }
+    .top4-card.rank-1 .top4-rank { color:#ffd200; opacity:1; }
+    .top4-card.rank-2 .top4-rank { color:#c8c8dc; opacity:1; }
+    .top4-card.rank-3 .top4-rank { color:#b4783c; opacity:1; }
+
+    .top4-flag { font-size:3rem; line-height:1; margin-bottom:8px; }
+    .top4-name { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:2px; color:#fff; margin-bottom:12px; }
+
+    .win-prob { font-family:'Bebas Neue',sans-serif; font-size:2.6rem; line-height:1; letter-spacing:1px; }
+    .top4-card.rank-1 .win-prob { color:#ffd200; }
+    .top4-card.rank-2 .win-prob { color:#c8c8dc; }
+    .top4-card.rank-3 .win-prob { color:#b4783c; }
+    .top4-card.rank-4 .win-prob { color:rgba(255,255,255,0.7); }
+
+    .win-label { font-size:0.6rem; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.35); margin-top:2px; }
+
+    .prob-bar-wrap { width:100%; height:4px; background:rgba(255,255,255,0.08); border-radius:2px; margin-top:12px; overflow:hidden; }
+    .prob-bar { height:100%; border-radius:2px; transition:width 0.6s ease; }
+    .top4-card.rank-1 .prob-bar { background:linear-gradient(90deg,#ffd200,#ff8c00); }
+    .top4-card.rank-2 .prob-bar { background:linear-gradient(90deg,#c8c8dc,#9090b0); }
+    .top4-card.rank-3 .prob-bar { background:linear-gradient(90deg,#b4783c,#8c5820); }
+    .top4-card.rank-4 .prob-bar { background:linear-gradient(90deg,rgba(255,255,255,0.5),rgba(255,255,255,0.25)); }
+
+    .finalist-pct { font-size:0.72rem; color:rgba(255,255,255,0.4); margin-top:8px; }
+    .finalist-pct span { color:rgba(255,255,255,0.75); font-weight:600; }
+
+    /* WINNER CARD (single run) */
+    .winner-banner {
+      text-align: center;
+      padding: 36px 24px 28px;
+      background: linear-gradient(160deg,rgba(255,210,0,0.14),rgba(255,140,0,0.06));
+      border: 1px solid rgba(255,210,0,0.4);
+      border-radius: 10px;
+      margin-bottom: 24px;
+    }
+    .winner-trophy { font-size: 3.5rem; margin-bottom: 8px; }
+    .winner-label { font-size: 0.65rem; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,210,0,0.6); margin-bottom: 10px; }
+    .winner-flag { font-size: 4rem; line-height: 1; margin-bottom: 8px; }
+    .winner-name { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 4px; color: #ffd200; }
+    .runner-row { margin-top: 20px; display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
+    .runner-item { text-align: center; }
+    .runner-item-label { font-size: 0.58rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 4px; }
+    .runner-item-flag { font-size: 1.8rem; }
+    .runner-item-name { font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.7); margin-top: 2px; }
+
+    /* FULL ODDS TABLE */
+    .section-label {
+      font-size:0.65rem; letter-spacing:3px; text-transform:uppercase;
+      color:rgba(255,210,0,0.65); margin-bottom:12px; margin-top:28px;
+    }
+    .odds-table { width:100%; border-collapse:collapse; }
+    .odds-table th {
+      font-size:0.6rem; letter-spacing:2px; text-transform:uppercase;
+      color:rgba(255,255,255,0.3); padding:8px 12px 6px;
+      text-align:left; font-weight:400;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+    }
+    .odds-table th:not(:first-child):not(:nth-child(2)) { text-align:right; }
+    .odds-table td {
+      padding:8px 12px;
+      border-bottom:1px solid rgba(255,255,255,0.03);
+      font-size:0.82rem;
+    }
+    .odds-table td:not(:first-child):not(:nth-child(2)) { text-align:right; color:rgba(255,255,255,0.55); }
+    .odds-table tr:hover td { background:rgba(255,255,255,0.02); }
+    .pct-cell { font-weight:600; color:#ffd200 !important; }
+    .zero-pct { color:rgba(255,255,255,0.2) !important; font-weight:400 !important; }
+    .mini-bar-wrap { width:60px; height:5px; background:rgba(255,255,255,0.07); border-radius:2px; display:inline-block; vertical-align:middle; }
+    .mini-bar { height:100%; border-radius:2px; background:linear-gradient(90deg,#ffd200,#ff8c00); }
+
+    /* GROUPS */
+    .groups-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px; }
+    .group-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:6px; overflow:hidden; }
+    .group-header { background:rgba(255,210,0,0.08); border-bottom:1px solid rgba(255,210,0,0.15); padding:10px 16px; font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:3px; color:#ffd200; }
+    .group-table { width:100%; border-collapse:collapse; }
+    .group-table th { font-size:0.6rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.3); padding:8px 12px 4px; text-align:left; font-weight:400; }
+    .group-table th:not(:first-child) { text-align:center; }
+    .group-table td { padding:7px 12px; font-size:0.82rem; border-top:1px solid rgba(255,255,255,0.04); }
+    .group-table td:not(:first-child) { text-align:center; color:rgba(255,255,255,0.6); }
+    .group-table tr.qualified td { background:rgba(255,210,0,0.04); }
+    .team-cell { display:flex; align-items:center; gap:8px; }
+    .team-flag { font-size:1.1rem; }
+    .team-name-sm { font-size:0.82rem; font-weight:500; }
+    .pts-badge { display:inline-block; background:rgba(255,210,0,0.15); color:#ffd200; border-radius:3px; padding:1px 6px; font-size:0.78rem; font-weight:600; }
+
+    /* BRACKET */
+    .bracket-container { overflow-x:auto; padding-bottom:16px; }
+    .bracket { display:flex; gap:0; min-width:900px; }
+    .round-col { flex:1; display:flex; flex-direction:column; }
+    .round-label { font-size:0.62rem; letter-spacing:3px; text-transform:uppercase; color:rgba(255,210,0,0.7); text-align:center; padding:8px 4px 12px; border-bottom:1px solid rgba(255,210,0,0.1); margin-bottom:8px; }
+    .round-matches { display:flex; flex-direction:column; justify-content:space-around; flex:1; gap:6px; padding:4px; }
+    .match-card { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.07); border-radius:4px; overflow:hidden; font-size:0.76rem; }
+    .match-team { display:flex; align-items:center; gap:6px; padding:6px 10px; }
+    .match-team + .match-team { border-top:1px solid rgba(255,255,255,0.05); }
+    .match-team.winner { background:rgba(255,210,0,0.08); color:#fff; font-weight:600; }
+    .match-team.loser { color:rgba(255,255,255,0.4); }
+    .mt-flag { font-size:0.9rem; }
+    .mt-name { flex:1; }
+
+    /* STRENGTH */
+    .strength-table { width:100%; border-collapse:collapse; }
+    .strength-table th { font-size:0.65rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.35); padding:8px 12px; text-align:left; font-weight:400; border-bottom:1px solid rgba(255,255,255,0.07); }
+    .strength-table th:not(:first-child):not(:nth-child(2)) { text-align:right; }
+    .strength-table td { padding:9px 12px; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.82rem; }
+    .strength-table td:not(:first-child):not(:nth-child(2)) { text-align:right; color:rgba(255,255,255,0.65); }
+    .strength-bar-wrap { width:80px; height:6px; background:rgba(255,255,255,0.08); border-radius:3px; display:inline-block; }
+    .strength-bar { height:100%; border-radius:3px; background:linear-gradient(90deg,#ffd200,#ff8c00); }
+    .rank-num { color:rgba(255,255,255,0.3); font-size:0.72rem; width:28px; display:inline-block; }
+
+    /* SHARED */
+    .empty-state { text-align:center; padding:64px 24px; color:rgba(255,255,255,0.3); }
+    .empty-icon { font-size:3rem; margin-bottom:12px; }
+    .empty-text { font-size:0.85rem; letter-spacing:1px; }
+    .info-bar { display:flex; gap:16px; flex-wrap:wrap; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:6px; padding:14px 20px; margin-bottom:20px; font-size:0.75rem; color:rgba(255,255,255,0.45); }
+    .info-item { display:flex; align-items:center; gap:6px; }
+    .info-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .divider { height:1px; background:rgba(255,255,255,0.05); margin:24px 0; }
+
+    .load-btn {
+      display: inline-block;
+      margin: 12px auto 0;
+      padding: 9px 28px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.05rem;
+      letter-spacing: 2px;
+      background: transparent;
+      color: #4caf80;
+      border: 1px solid #4caf80;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .load-btn:hover { background: rgba(76,175,128,0.12); }
+    .load-btn.loading { opacity: 0.5; cursor: default; }
+    .load-status { font-size: 0.7rem; letter-spacing: 1px; margin-top: 6px; }
+    .load-ok  { color: #4caf80; }
+    .load-err { color: #f06060; }
+
+    .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap:16px; }
+    .results-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:6px; overflow:hidden; }
+    .results-header { background:rgba(76,175,128,0.1); border-bottom:1px solid rgba(76,175,128,0.2); padding:10px 16px; font-family:'Bebas Neue',sans-serif; font-size:1.05rem; letter-spacing:3px; color:#4caf80; }
+    .result-row { display:flex; align-items:center; justify-content:space-between; padding:7px 14px; border-top:1px solid rgba(255,255,255,0.04); font-size:0.82rem; }
+    .result-teams { display:flex; align-items:center; gap:6px; flex:1; }
+    .result-score { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:2px; color:#ffd200; min-width:50px; text-align:center; }
+    .result-away  { display:flex; align-items:center; gap:6px; flex:1; justify-content:flex-end; }
+
+
+      .wc-title { font-size:2.4rem; }
+      .bracket { min-width:600px; }
+      .odds-table { font-size:0.75rem; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const N_SIMS = 1000;
+
+    // ── TEAM DATA (nombres en español) ────────────────────────────────────────
+    const TEAMS_RAW = [
+      { id:"MEX", name:"México",         flag:"🇲🇽", group:"A", elo:1780, mv:290  },
+      { id:"RSA", name:"Sudáfrica",      flag:"🇿🇦", group:"A", elo:1480, mv:55   },
+      { id:"KOR", name:"Corea del Sur",  flag:"🇰🇷", group:"A", elo:1680, mv:210  },
+      { id:"CZE", name:"Chequia",        flag:"🇨🇿", group:"A", elo:1650, mv:280  },
+      { id:"CAN", name:"Canadá",         flag:"🇨🇦", group:"B", elo:1690, mv:280  },
+      { id:"BIH", name:"Bosnia",         flag:"🇧🇦", group:"B", elo:1540, mv:130  },
+      { id:"QAT", name:"Catar",          flag:"🇶🇦", group:"B", elo:1430, mv:40   },
+      { id:"SUI", name:"Suiza",          flag:"🇨🇭", group:"B", elo:1740, mv:320  },
+      { id:"BRA", name:"Brasil",         flag:"🇧🇷", group:"C", elo:1940, mv:790  },
+      { id:"MAR", name:"Marruecos",      flag:"🇲🇦", group:"C", elo:1790, mv:260  },
+      { id:"SCO", name:"Escocia",        flag:"🏴󠁧󠁢󠁳󠁣󠁴󠁿", group:"C", elo:1620, mv:230  },
+      { id:"HAI", name:"Haití",          flag:"🇭🇹", group:"C", elo:1380, mv:25   },
+      { id:"USA", name:"EE.UU.",         flag:"🇺🇸", group:"D", elo:1740, mv:310  },
+      { id:"AUS", name:"Australia",      flag:"🇦🇺", group:"D", elo:1620, mv:165  },
+      { id:"PAR", name:"Paraguay",       flag:"🇵🇾", group:"D", elo:1600, mv:140  },
+      { id:"TUR", name:"Turquía",        flag:"🇹🇷", group:"D", elo:1720, mv:320  },
+      { id:"GER", name:"Alemania",       flag:"🇩🇪", group:"E", elo:1870, mv:710  },
+      { id:"ECU", name:"Ecuador",        flag:"🇪🇨", group:"E", elo:1690, mv:200  },
+      { id:"CIV", name:"Costa de Marfil",flag:"🇨🇮", group:"E", elo:1620, mv:190  },
+      { id:"CUW", name:"Curazao",        flag:"🇨🇼", group:"E", elo:1380, mv:30   },
+      { id:"NED", name:"Países Bajos",   flag:"🇳🇱", group:"F", elo:1900, mv:680  },
+      { id:"JPN", name:"Japón",          flag:"🇯🇵", group:"F", elo:1800, mv:270  },
+      { id:"TUN", name:"Túnez",          flag:"🇹🇳", group:"F", elo:1530, mv:70   },
+      { id:"SVK", name:"Eslovaquia",     flag:"🇸🇰", group:"F", elo:1600, mv:200  },
+      { id:"BEL", name:"Bélgica",        flag:"🇧🇪", group:"G", elo:1780, mv:540  },
+      { id:"IRN", name:"Irán",           flag:"🇮🇷", group:"G", elo:1570, mv:60   },
+      { id:"EGY", name:"Egipto",         flag:"🇪🇬", group:"G", elo:1580, mv:90   },
+      { id:"NZL", name:"Nueva Zelanda",  flag:"🇳🇿", group:"G", elo:1430, mv:30   },
+      { id:"ESP", name:"España",         flag:"🇪🇸", group:"H", elo:2070, mv:920  },
+      { id:"URU", name:"Uruguay",        flag:"🇺🇾", group:"H", elo:1810, mv:320  },
+      { id:"SAU", name:"Arabia Saudita", flag:"🇸🇦", group:"H", elo:1560, mv:80   },
+      { id:"CPV", name:"Cabo Verde",     flag:"🇨🇻", group:"H", elo:1480, mv:35   },
+      { id:"FRA", name:"Francia",        flag:"🇫🇷", group:"I", elo:2040, mv:1280 },
+      { id:"SEN", name:"Senegal",        flag:"🇸🇳", group:"I", elo:1730, mv:230  },
+      { id:"NOR", name:"Noruega",        flag:"🇳🇴", group:"I", elo:1810, mv:500  },
+      { id:"IRQ", name:"Irak",           flag:"🇮🇶", group:"I", elo:1460, mv:45   },
+      { id:"ARG", name:"Argentina",      flag:"🇦🇷", group:"J", elo:2020, mv:600  },
+      { id:"JOR", name:"Jordania",       flag:"🇯🇴", group:"J", elo:1450, mv:16   },
+      { id:"ALG", name:"Argelia",        flag:"🇩🇿", group:"J", elo:1590, mv:95   },
+      { id:"AUT", name:"Austria",        flag:"🇦🇹", group:"J", elo:1750, mv:360  },
+      { id:"ENG", name:"Inglaterra",     flag:"🏴󠁧󠁢󠁥󠁮󠁧󠁿", group:"K", elo:1980, mv:1300 },
+      { id:"COL", name:"Colombia",       flag:"🇨🇴", group:"K", elo:1810, mv:380  },
+      { id:"PAN", name:"Panamá",         flag:"🇵🇦", group:"K", elo:1510, mv:60   },
+      { id:"UZB", name:"Uzbekistán",     flag:"🇺🇿", group:"K", elo:1520, mv:70   },
+      { id:"POR", name:"Portugal",       flag:"🇵🇹", group:"L", elo:1920, mv:860  },
+      { id:"CRO", name:"Croacia",        flag:"🇭🇷", group:"L", elo:1820, mv:290  },
+      { id:"GHA", name:"Ghana",          flag:"🇬🇭", group:"L", elo:1550, mv:130  },
+      { id:"BOL", name:"Bolivia",        flag:"🇧🇴", group:"L", elo:1420, mv:30   },
+    ];
+
+    function computeStrengths(teams, alpha) {
+      // Quadratic regression: Elo_mv = 21.2713·ln²(€M) − 60.8941·ln(€M) + 1394.9497
+      return teams.map(t => {
+        const lv = Math.log(t.mv);
+        const eloMv = 21.2713 * lv * lv - 60.8941 * lv + 1394.9497;
+        const eloEff = (1 - alpha) * t.elo + alpha * eloMv;
+        return { ...t, strength: eloEff, eloMv: Math.round(eloMv) };
+      });
+    }
+
+    const GROUPS = ["A","B","C","D","E","F","G","H","I","J","K","L"];
+
+    // ── ENGINE ────────────────────────────────────────────────────────────────
+    // Classic Elo probability: P(A wins) = 1 / (1 + 10^(-(eloA - eloB)/400))
+    function matchProbs(eloA, eloB) {
+      const pA = 1 / (1 + Math.pow(10, -(eloA - eloB) / 400));
+      const pDraw = Math.min(0.28 * Math.exp(-Math.abs(eloA - eloB) / 400 * 1.2), 0.38);
+      return { pA: pA * (1 - pDraw), pDraw };
+    }
+
+    function simMatch(a, b) {
+      const { pA, pDraw } = matchProbs(a.strength, b.strength);
+      const r = Math.random();
+      if (r < pA) return { winner:a, loser:b, draw:false, wG:1+Math.floor(Math.random()*3), lG:Math.floor(Math.random()*2) };
+      if (r < pA + pDraw) { const g=Math.floor(Math.random()*3); return { winner:null,loser:null,draw:true,wG:g,lG:g }; }
+      return { winner:b, loser:a, draw:false, wG:1+Math.floor(Math.random()*3), lG:Math.floor(Math.random()*2) };
+    }
+
+    function simKO(a, b) {
+      const { pA } = matchProbs(a.strength, b.strength);
+      return Math.random() < pA ? a : b;
+    }
+
+    function simGroup(teams) {
+      const st = {};
+      teams.forEach(t => { st[t.id]={team:t,pts:0,gd:0,gf:0,played:0}; });
+      const matches = [];
+      for (let i=0; i<teams.length; i++) {
+        for (let j=i+1; j<teams.length; j++) {
+          const r = simMatch(teams[i], teams[j]);
+          matches.push({ home:teams[i], away:teams[j], result:r });
+          if (r.draw) {
+            st[teams[i].id].pts++; st[teams[j].id].pts++;
+            st[teams[i].id].gf+=r.wG; st[teams[j].id].gf+=r.lG;
+            st[teams[i].id].gd+=r.wG-r.lG; st[teams[j].id].gd+=r.lG-r.wG;
+          } else {
+            st[r.winner.id].pts+=3; st[r.winner.id].gf+=r.wG; st[r.winner.id].gd+=r.wG-r.lG;
+            st[r.loser.id].gf+=r.lG; st[r.loser.id].gd+=r.lG-r.wG;
+          }
+          st[teams[i].id].played++; st[teams[j].id].played++;
+        }
+      }
+      return {
+        sorted: Object.values(st).sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf),
+        matches
+      };
+    }
+
+    function runTournament(TEAMS) {
+      const gRes = {};
+      const thirds = [];
+      GROUPS.forEach(g => {
+        const res = simGroup(TEAMS.filter(t=>t.group===g));
+        gRes[g] = res;
+        thirds.push(res.sorted[2]);
+      });
+      const best8 = [...thirds].sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf).slice(0,8).map(s=>s.team);
+      const r32 = [];
+      GROUPS.forEach(g=>{r32.push(gRes[g].sorted[0].team); r32.push(gRes[g].sorted[1].team);});
+      best8.forEach(t=>r32.push(t));
+      const sh = [...r32].sort(()=>Math.random()-0.5);
+      const simRound = ts=>{ const n=[]; for(let i=0;i<ts.length;i+=2) n.push(simKO(ts[i],ts[i+1])); return n; };
+      const r16=simRound(sh), qf=simRound(r16), sf=simRound(qf), fin=simRound(sf);
+      const champ=fin[0], ru=fin[1];
+      return { gRes, r32:sh, r16, qf, sf, fin, champion:champ, runnerUp:ru,
+        groupStages:GROUPS.map(g=>({group:g,standings:gRes[g].sorted,matches:gRes[g].matches})) };
+    }
+
+    // ── MONTE CARLO ───────────────────────────────────────────────────────────
+    function runMonteCarlo(n, TEAMS) {
+      const wins={}, groupFirst={}, groupSecond={}, groupThirdQ={}, groupQ={};
+      const r32c={}, r16c={}, qfc={}, sfc={}, finc={};
+      TEAMS.forEach(t=>{
+        wins[t.id]=0; groupFirst[t.id]=0; groupSecond[t.id]=0;
+        groupThirdQ[t.id]=0; groupQ[t.id]=0;
+        r32c[t.id]=0; r16c[t.id]=0; qfc[t.id]=0; sfc[t.id]=0; finc[t.id]=0;
+      });
+      let last = null;
+      for (let i=0; i<n; i++) {
+        const r = runTournament(TEAMS);
+        wins[r.champion.id]++;
+        // collect all thirds and find best 8
+        const thirds = r.groupStages.map(({standings})=>standings[2]).filter(Boolean);
+        const best8ids = new Set(
+          [...thirds].sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf)
+            .slice(0,8).map(s=>s.team.id)
+        );
+        r.groupStages.forEach(({standings})=>{
+          if (standings[0]) { groupFirst[standings[0].team.id]++; groupQ[standings[0].team.id]++; }
+          if (standings[1]) { groupSecond[standings[1].team.id]++; groupQ[standings[1].team.id]++; }
+          if (standings[2] && best8ids.has(standings[2].team.id)) {
+            groupThirdQ[standings[2].team.id]++; groupQ[standings[2].team.id]++;
+          }
+        });
+        r.r32.forEach(t=>{ r32c[t.id]++; });
+        r.r16.forEach(t=>{ r16c[t.id]++; });
+        r.qf.forEach(t=>{  qfc[t.id]++;  });
+        r.sf.forEach(t=>{  sfc[t.id]++;  });
+        r.fin.forEach(t=>{ finc[t.id]++; });
+        last = r;
+      }
+      return { wins, groupFirst, groupSecond, groupThirdQ, groupQ,
+               r32c, r16c, qfc, sfc, finc, lastResult:last };
+    }
+
+    // ── APP ───────────────────────────────────────────────────────────────────
+    function App() {
+      const [tab,setTab]           = React.useState("probs");
+      const [stats,setStats]       = React.useState(null);
+      const [lastRun,setLastRun]   = React.useState(null);
+      const [running,setRunning]   = React.useState(false);
+      const [runNo,setRunNo]       = React.useState(0);
+      const [mode,setMode]         = React.useState("1");
+      const [mvPct,setMvPct]       = React.useState(40);
+
+      const alpha = mvPct / 100;
+      const TEAMS = React.useMemo(()=>computeStrengths(TEAMS_RAW, alpha), [mvPct]);
+      const sortedByStrength = React.useMemo(()=>[...TEAMS].sort((a,b)=>b.strength-a.strength),[TEAMS]);
+
+      const simulate = React.useCallback(()=>{
+        setRunning(true);
+        requestAnimationFrame(()=>requestAnimationFrame(()=>{
+          if (mode === "1") {
+            const result = runTournament(TEAMS);
+            setLastRun(result);
+            setStats(null);
+            setRunNo(n=>n+1);
+            setTab("groups");
+          } else {
+            const result = runMonteCarlo(N_SIMS, TEAMS);
+            setStats(result);
+            setLastRun(result.lastResult);
+            setRunNo(n=>n+1);
+            setTab("probs");
+          }
+          setRunning(false);
+        }));
+      },[mode, TEAMS]);
+
+      const probList = React.useMemo(()=>{
+        if (!stats) return [];
+        return TEAMS.map(t=>({
+          ...t,
+          winPct:   stats.wins[t.id]   / N_SIMS * 100,
+          finalPct: stats.finc[t.id]   / N_SIMS * 100,
+          semiPct:  stats.sfc[t.id]    / N_SIMS * 100,
+        })).sort((a,b)=>b.winPct-a.winPct);
+      },[stats, TEAMS]);
+
+      const top4    = probList.slice(0,4);
+      const maxWin  = probList.length ? probList[0].winPct : 1;
+
+      const MEDAL = ["🥇 Favorito","🥈 2.°","🥉 3.°","4.°"];
+
+      const eloW = 100 - mvPct;
+      // alpha = mvPct/100 used in computeStrengths above
+      let sliderLabel = "";
+      if (mvPct === 0) sliderLabel = "100% Elo puro";
+      else if (mvPct === 100) sliderLabel = "100% Valor de mercado puro";
+      else sliderLabel = `${eloW}% Elo · ${mvPct}% Valor`;
+
+      return (
+        <div className="wc-root">
+
+          {/* ── HERO ── */}
+          <div className="wc-hero">
+            <div className="wc-title">Torneo Mundial 2026</div>
+            <div className="wc-subtitle">Simulación: ¿Quién será Campeón del Mundo?</div>
+            <div className="wc-badge">⚡ {sliderLabel}</div>
+
+            {/* MODE TOGGLE */}
+            <div className="mode-toggle">
+              <button className={"mode-btn"+(mode==="1"?" active":"")} onClick={()=>setMode("1")}>
+                Una Simulación
+              </button>
+              <button className={"mode-btn"+(mode==="1000"?" active":"")} onClick={()=>setMode("1000")}>
+                1000 Simulaciones
+              </button>
+            </div>
+
+            {/* SLIDER */}
+            <div className="slider-wrap">
+              <div className="slider-labels">
+                <span>Solo Elo</span>
+                <span>Solo Valor</span>
+              </div>
+              <input
+                type="range" min={0} max={100} step={5}
+                value={mvPct}
+                onChange={e=>setMvPct(Number(e.target.value))}
+              />
+              <div className="slider-val">{sliderLabel}</div>
+            </div>
+
+            <button className="sim-btn" onClick={simulate} disabled={running}>
+              {running ? "Simulando…" : runNo===0
+                ? (mode==="1" ? "▶ Simular 1 torneo" : `▶ Simular ${N_SIMS} torneos`)
+                : (mode==="1" ? "↺ Nueva simulación" : `↺ Re-simular ${N_SIMS} torneos`)}
+            </button>
+            {running && (
+              <div>
+                <div className="progress-wrap"><div className="progress-bar" style={{width:"100%",animation:"none",opacity:0.4}}></div></div>
+                <div className="progress-label">Simulando torneos…</div>
+              </div>
+            )}
+            {!running && runNo>0 && mode==="1000" && (
+              <div className="sim-count">LOTE #{runNo} · {N_SIMS.toLocaleString()} torneos completados</div>
+            )}
+            {!running && runNo>0 && mode==="1" && (
+              <div className="sim-count">SIMULACIÓN #{runNo} completada</div>
+            )}
+
+            {/* AUTHOR */}
+            <div className="author-credit" style={{marginTop:14,fontSize:"0.82rem",color:"rgba(255,255,255,0.75)",fontStyle:"normal",letterSpacing:"0.5px"}}>🎲 Autor: Raúl Rojas, Universidad Libre de Berlín</div>
+
+          </div>
+
+          {/* ── TABS ── */}
+          <div className="tabs">
+            {[
+              {key:"probs",    label:"📊 Probabilidades", hidden: mode==="1"},
+              {key:"groups",   label:"⚽ Grupos"},
+              {key:"knockout", label:"🥊 Eliminatorias"},
+              {key:"strength", label:"⚙️ Valoraciones"},
+            ].filter(t=>!t.hidden).map(t=>(
+              <button key={t.key} className={"tab"+(tab===t.key?" active":"")} onClick={()=>setTab(t.key)}>
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          {/* ── PROBABILITIES TAB (1000 runs only) ── */}
+          {tab==="probs" && mode==="1000" && (
+            <div className="section">
+              {!stats ? (
+                <div className="empty-state">
+                  <div className="empty-icon">🎲</div>
+                  <div className="empty-text">Presiona el botón para ejecutar {N_SIMS} simulaciones completas</div>
+                </div>
+              ) : (
+                <div>
+                  {/* TOP 4 CARDS */}
+                  <div className="section-label" style={{marginTop:24}}>Principales candidatos — por probabilidad de victoria</div>
+                  <div className="top4-grid">
+                    {top4.map((t,i)=>(
+                      <div key={t.id} className={"top4-card rank-"+(i+1)}>
+                        <div className="top4-rank">{MEDAL[i]}</div>
+                        <div className="top4-flag">{t.flag}</div>
+                        <div className="top4-name">{t.name}</div>
+                        <div className="win-prob">{t.winPct.toFixed(1)}%</div>
+                        <div className="win-label">Probabilidad de ganar</div>
+                        <div className="prob-bar-wrap">
+                          <div className="prob-bar" style={{width:(t.winPct/maxWin*100)+"%"}}></div>
+                        </div>
+                        <div className="finalist-pct">
+                          Final: <span>{t.finalPct.toFixed(1)}%</span>&nbsp;·&nbsp;Semi: <span>{t.semiPct.toFixed(1)}%</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="divider"></div>
+
+                  {/* ALL 48 TEAMS */}
+                  <div className="section-label">Los 48 equipos — ordenados por probabilidad de victoria</div>
+                  <table className="odds-table">
+                    <thead>
+                      <tr>
+                        <th>#</th><th>Equipo</th><th>% Victoria</th><th>% Final</th><th>% Semis</th><th>Elo</th><th>€M</th><th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {probList.map((t,i)=>(
+                        <tr key={t.id}>
+                          <td><span className="rank-num">{i+1}</span></td>
+                          <td><div className="team-cell"><span className="team-flag">{t.flag}</span><span>{t.name}</span></div></td>
+                          <td className={t.winPct>0?"pct-cell":"zero-pct"}>{t.winPct.toFixed(1)}%</td>
+                          <td>{t.finalPct.toFixed(1)}%</td>
+                          <td>{t.semiPct.toFixed(1)}%</td>
+                          <td>{t.elo}</td>
+                          <td>{t.mv}</td>
+                          <td>
+                            <div className="mini-bar-wrap">
+                              <div className="mini-bar" style={{width:(t.winPct/maxWin*100)+"%"}}></div>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                  <div className="info-bar" style={{marginTop:24}}>
+                    <div className="info-item"><div className="info-dot" style={{background:"rgba(255,210,0,0.6)"}}></div>% Victoria = porcentaje de los {N_SIMS} torneos en que ese equipo fue campeón</div>
+                    <div className="info-item"><div className="info-dot" style={{background:"rgba(100,200,255,0.6)"}}></div>Elo efectivo = (1−α)×Elo real + α×Elo(valor), α = {(mvPct/100).toFixed(2)} · fórmula logística clásica base 10, divisor 400</div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── SINGLE RUN RESULT (mode=1, probs tab) ── */}
+          {tab==="probs" && mode==="1" && (
+            <div className="section">
+              <div className="empty-state">
+                <div className="empty-icon">🎲</div>
+                <div className="empty-text">Modo de 1 simulación: ve a la pestaña Grupos o Eliminatorias para ver los resultados</div>
+              </div>
+            </div>
+          )}
+
+          {/* ── GROUPS TAB ── */}
+          {tab==="groups" && (
+            <div className="section">
+              {/* ── MODE 1000: group probability tables ── */}
+              {mode==="1000" && (
+                !stats ? (
+                  <div className="empty-state"><div className="empty-icon">⚽</div><div className="empty-text">Ejecuta las simulaciones primero</div></div>
+                ) : (
+                  <div>
+                    <div className="info-bar" style={{marginTop:20}}>
+                      <div className="info-item"><div className="info-dot" style={{background:"#ffd200"}}></div>% 1.° / % 2.° = probabilidad de terminar en esa posición</div>
+                      <div className="info-item"><div className="info-dot" style={{background:"rgba(100,200,255,0.7)"}}></div>% 3.°✓ = probabilidad de clasificar como mejor tercero</div>
+                      <div className="info-item"><div className="info-dot" style={{background:"rgba(255,255,255,0.3)"}}></div>% Clas. = suma de las tres vías de clasificación</div>
+                    </div>
+                    <div className="groups-grid">
+                      {GROUPS.map(g=>{
+                        const teamsInGroup = TEAMS.filter(t=>t.group===g)
+                          .map(t=>({
+                            ...t,
+                            firstPct:  stats.groupFirst[t.id]   / N_SIMS * 100,
+                            secondPct: stats.groupSecond[t.id]  / N_SIMS * 100,
+                            thirdPct:  stats.groupThirdQ[t.id]  / N_SIMS * 100,
+                            qualPct:   stats.groupQ[t.id]       / N_SIMS * 100,
+                          }))
+                          .sort((a,b)=>b.firstPct-a.firstPct);
+                        const maxFirst = teamsInGroup[0]?.firstPct || 1;
+                        return (
+                          <div key={g} className="group-card">
+                            <div className="group-header">GRUPO {g}</div>
+                            <table className="group-table">
+                              <thead><tr>
+                                <th>Equipo</th>
+                                <th style={{textAlign:"right"}}>% 1.°</th>
+                                <th style={{textAlign:"right"}}>% 2.°</th>
+                                <th style={{textAlign:"right"}}>% 3.°✓</th>
+                                <th style={{textAlign:"right"}}>% Clas.</th>
+                              </tr></thead>
+                              <tbody>
+                                {teamsInGroup.map((t,i)=>(
+                                  <tr key={t.id} className={i<2?"qualified":""}>
+                                    <td><div className="team-cell"><span className="team-flag">{t.flag}</span><span className="team-name-sm">{t.name}</span></div></td>
+                                    <td style={{textAlign:"right",color:"#ffd200",fontWeight:600}}>{t.firstPct.toFixed(1)}%</td>
+                                    <td style={{textAlign:"right",color:"rgba(255,255,255,0.55)"}}>{t.secondPct.toFixed(1)}%</td>
+                                    <td style={{textAlign:"right",color:"rgba(100,200,255,0.7)"}}>{t.thirdPct.toFixed(1)}%</td>
+                                    <td style={{textAlign:"right",color:"rgba(255,255,255,0.4)",fontSize:"0.75rem"}}>{t.qualPct.toFixed(1)}%</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )
+              )}
+
+              {/* ── MODE 1: last single run results ── */}
+              {mode==="1" && (
+                !lastRun ? (
+                  <div className="empty-state"><div className="empty-icon">⚽</div><div className="empty-text">Ejecuta una simulación primero</div></div>
+                ) : (
+                  <div>
+                    <div className="winner-banner" style={{marginTop:20}}>
+                      <div className="winner-trophy">🏆</div>
+                      <div className="winner-label">Campeón del mundo</div>
+                      <div className="winner-flag">{lastRun.champion.flag}</div>
+                      <div className="winner-name">{lastRun.champion.name}</div>
+                      <div className="runner-row">
+                        <div className="runner-item">
+                          <div className="runner-item-label">🥈 Subcampeón</div>
+                          <div className="runner-item-flag">{lastRun.runnerUp.flag}</div>
+                          <div className="runner-item-name">{lastRun.runnerUp.name}</div>
+                        </div>
+                        {lastRun.sf.filter(t=>t.id!==lastRun.champion.id&&t.id!==lastRun.runnerUp.id).map(t=>(
+                          <div key={t.id} className="runner-item">
+                            <div className="runner-item-label">🥉 Semifinalista</div>
+                            <div className="runner-item-flag">{t.flag}</div>
+                            <div className="runner-item-name">{t.name}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="info-bar" style={{marginTop:20}}>
+                      <div className="info-item"><div className="info-dot" style={{background:"rgba(255,210,0,0.5)"}}></div>Resultados de la fase de grupos de esta simulación</div>
+                      <div className="info-item"><div className="info-dot" style={{background:"rgba(100,200,255,0.5)"}}></div>Los 2 primeros de cada grupo avanzan + los 8 mejores terceros</div>
+                    </div>
+                    <div className="groups-grid">
+                      {lastRun.groupStages.map(({group,standings})=>(
+                        <div key={group} className="group-card">
+                          <div className="group-header">GRUPO {group}</div>
+                          <table className="group-table">
+                            <thead><tr><th>Equipo</th><th>PJ</th><th>DG</th><th>Pts</th></tr></thead>
+                            <tbody>
+                              {standings.map((s,i)=>(
+                                <tr key={s.team.id} className={i<2?"qualified":""}>
+                                  <td><div className="team-cell"><span className="team-flag">{s.team.flag}</span><span className="team-name-sm">{s.team.name}</span></div></td>
+                                  <td>{s.played}</td>
+                                  <td style={{color:s.gd>0?"#4caf80":s.gd<0?"#f06060":"inherit"}}>{s.gd>0?"+"+s.gd:s.gd}</td>
+                                  <td><span className="pts-badge">{s.pts}</span></td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+          )}
+
+          {/* ── KNOCKOUT TAB ── */}
+          {tab==="knockout" && (
+            <div className="section">
+
+              {/* MODE 1000: unified table, teams as rows, rounds as columns */}
+              {mode==="1000" && (
+                !stats ? (
+                  <div className="empty-state"><div className="empty-icon">🥊</div><div className="empty-text">Ejecuta las simulaciones primero</div></div>
+                ) : (()=>{
+                  const koList = [...TEAMS].map(t=>({
+                    ...t,
+                    pGrupos: stats.groupQ[t.id]  / N_SIMS * 100,
+                    pR32:  stats.r32c[t.id]  / N_SIMS * 100,
+                    pR16:  stats.r16c[t.id]  / N_SIMS * 100,
+                    pQF:   stats.qfc[t.id]   / N_SIMS * 100,
+                    pSF:   stats.sfc[t.id]   / N_SIMS * 100,
+                    pFin:  stats.finc[t.id]  / N_SIMS * 100,
+                    pWin:  stats.wins[t.id]  / N_SIMS * 100,
+                  })).sort((a,b)=>b.pWin-a.pWin);
+                  const cell = (v) => v > 0
+                    ? <td style={{textAlign:"right",color: v>=50?"#ffd200": v>=20?"rgba(255,210,0,0.6)":"rgba(255,255,255,0.45)",fontWeight: v>=50?600:400}}>{v.toFixed(1)}%</td>
+                    : <td style={{textAlign:"right",color:"rgba(255,255,255,0.15)"}}>—</td>;
+                  return (
+                    <div style={{marginTop:20}}>
+                      <div className="info-bar">
+                        <div className="info-item"><div className="info-dot" style={{background:"#ffd200"}}></div>Dorado ≥ 50% · atenuado ≥ 20% · gris &lt; 1%</div>
+                        <div className="info-item"><div className="info-dot" style={{background:"rgba(255,255,255,0.3)"}}></div>Grupos = % de clasificar (1.°, 2.° o mejor 3.°) · R32–Final = % de participar en esa ronda</div>
+                      </div>
+                      <div style={{overflowX:"auto"}}>
+                        <table className="odds-table" style={{minWidth:600}}>
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Equipo</th>
+                              <th style={{textAlign:"right"}}>Grupos</th>
+                              <th style={{textAlign:"right"}}>R32</th>
+                              <th style={{textAlign:"right"}}>R16</th>
+                              <th style={{textAlign:"right"}}>Ctos.</th>
+                              <th style={{textAlign:"right"}}>Semis</th>
+                              <th style={{textAlign:"right"}}>Final</th>
+                              <th style={{textAlign:"right"}}>🏆</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {koList.map((t,i)=>(
+                              <tr key={t.id}>
+                                <td><span className="rank-num">{i+1}</span></td>
+                                <td><div className="team-cell"><span className="team-flag">{t.flag}</span><span>{t.name}</span></div></td>
+                                {cell(t.pGrupos)}
+                                {cell(t.pR32)}
+                                {cell(t.pR16)}
+                                {cell(t.pQF)}
+                                {cell(t.pSF)}
+                                {cell(t.pFin)}
+                                {cell(t.pWin)}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  );
+                })()
+              )}
+
+              {/* MODE 1: bracket of last single run */}
+              {mode==="1" && (
+                !lastRun ? (
+                  <div className="empty-state"><div className="empty-icon">🥊</div><div className="empty-text">Ejecuta una simulación primero</div></div>
+                ) : (
+                  <div>
+                    <div style={{marginTop:20,marginBottom:8,fontSize:"0.72rem",color:"rgba(255,255,255,0.3)"}}>
+                      Cuadro de la última simulación ejecutada
+                    </div>
+                    <div className="bracket-container">
+                      <div className="bracket">
+                        {[
+                          {label:"Ronda de 32",      teams:lastRun.r16, prev:lastRun.r32},
+                          {label:"Ronda de 16",      teams:lastRun.qf,  prev:lastRun.r16},
+                          {label:"Cuartos de Final", teams:lastRun.sf,  prev:lastRun.qf},
+                          {label:"Semifinales",      teams:lastRun.fin, prev:lastRun.sf},
+                          {label:"Final",            teams:[lastRun.champion], prev:[lastRun.champion,lastRun.runnerUp]},
+                        ].map((round,ri)=>{
+                          const pairs=[];
+                          for(let i=0;i<round.prev.length;i+=2)
+                            pairs.push({a:round.prev[i],b:round.prev[i+1],winner:round.teams[Math.floor(i/2)]});
+                          return (
+                            <div key={ri} className="round-col">
+                              <div className="round-label">{round.label}</div>
+                              <div className="round-matches">
+                                {pairs.map((p,pi)=>(
+                                  <div key={pi} className="match-card">
+                                    <div className={"match-team "+(p.winner&&p.a&&p.winner.id===p.a.id?"winner":"loser")}>
+                                      <span className="mt-flag">{p.a&&p.a.flag}</span><span className="mt-name">{p.a&&p.a.name}</span>
+                                    </div>
+                                    <div className={"match-team "+(p.winner&&p.b&&p.winner.id===p.b.id?"winner":"loser")}>
+                                      <span className="mt-flag">{p.b&&p.b.flag}</span><span className="mt-name">{p.b&&p.b.name}</span>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+          )}
+
+          {/* ── TEAM RATINGS TAB ── */}
+          {tab==="strength" && (
+            <div className="section">
+              <div className="info-bar" style={{marginTop:20}}>
+                <div className="info-item"><div className="info-dot" style={{background:"#ffd200"}}></div>Elo efectivo = (1−α)×Elo real + α×Elo(valor de mercado), con α = {(mvPct/100).toFixed(2)}</div>
+              </div>
+              <table className="strength-table">
+                <thead>
+                  <tr><th>#</th><th>Equipo</th><th>Elo real</th><th>Elo valor (€M)</th><th>Elo efectivo</th><th></th></tr>
+                </thead>
+                <tbody>
+                  {sortedByStrength.map((t,i)=>(
+                    <tr key={t.id}>
+                      <td><span className="rank-num">{i+1}</span></td>
+                      <td><div className="team-cell"><span className="team-flag">{t.flag}</span><span>{t.name}</span></div></td>
+                      <td>{t.elo}</td>
+                      <td>{t.eloMv}</td>
+                      <td style={{fontWeight:600,color:"#ffd200"}}>{Math.round(t.strength)}</td>
+                      <td>
+                        <div className="strength-bar-wrap">
+                          <div className="strength-bar" style={{width:(t.strength/2070*100)+"%"}}></div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
