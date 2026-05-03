@@ -501,23 +501,43 @@
       return Math.random() < pA ? a : b;
     }
 
-    function simGroup(teams) {
+    function simGroup(teams, realGames) {
       const st = {};
       teams.forEach(t => { st[t.id]={team:t,pts:0,gd:0,gf:0,played:0}; });
       const matches = [];
       for (let i=0; i<teams.length; i++) {
         for (let j=i+1; j<teams.length; j++) {
-          const r = simMatch(teams[i], teams[j]);
-          matches.push({ home:teams[i], away:teams[j], result:r });
+          const a = teams[i], b = teams[j];
+          // check if this match has a real result
+          const real = realGames && realGames.find(g =>
+            (g.Local===a.name && g.Visitante===b.name) ||
+            (g.Local===b.name && g.Visitante===a.name)
+          );
+          let r;
+          if (real && (real.Estado==="jugado"||real.Estado==="played")) {
+            const hg = parseInt(real.Goles_Local)||0;
+            const ag = parseInt(real.Goles_Visitante)||0;
+            const home = real.Local===a.name ? a : b;
+            const away = real.Local===a.name ? b : a;
+            const homeG = real.Local===a.name ? hg : ag;
+            const awayG = real.Local===a.name ? ag : hg;
+            if (homeG > awayG)      r = { winner:home, loser:away, draw:false, wG:homeG, lG:awayG };
+            else if (awayG > homeG) r = { winner:away, loser:home, draw:false, wG:awayG, lG:homeG };
+            else                    r = { winner:null, loser:null, draw:true,  wG:homeG, lG:awayG };
+            r.real = true;
+          } else {
+            r = simMatch(a, b);
+          }
+          matches.push({ home:a, away:b, result:r });
           if (r.draw) {
-            st[teams[i].id].pts++; st[teams[j].id].pts++;
-            st[teams[i].id].gf+=r.wG; st[teams[j].id].gf+=r.lG;
-            st[teams[i].id].gd+=r.wG-r.lG; st[teams[j].id].gd+=r.lG-r.wG;
+            st[a.id].pts++; st[b.id].pts++;
+            st[a.id].gf+=r.wG; st[b.id].gf+=r.lG;
+            st[a.id].gd+=r.wG-r.lG; st[b.id].gd+=r.lG-r.wG;
           } else {
             st[r.winner.id].pts+=3; st[r.winner.id].gf+=r.wG; st[r.winner.id].gd+=r.wG-r.lG;
             st[r.loser.id].gf+=r.lG; st[r.loser.id].gd+=r.lG-r.wG;
           }
-          st[teams[i].id].played++; st[teams[j].id].played++;
+          st[a.id].played++; st[b.id].played++;
         }
       }
       return {
@@ -526,11 +546,13 @@
       };
     }
 
-    function runTournament(TEAMS) {
+    function runTournament(TEAMS, realGames) {
       const gRes = {};
       const thirds = [];
       GROUPS.forEach(g => {
-        const res = simGroup(TEAMS.filter(t=>t.group===g));
+        const groupTeams = TEAMS.filter(t=>t.group===g);
+        const groupReal  = realGames ? realGames.filter(r=>r.Grupo===g) : [];
+        const res = simGroup(groupTeams, groupReal);
         gRes[g] = res;
         thirds.push(res.sorted[2]);
       });
@@ -547,7 +569,7 @@
     }
 
     // ── MONTE CARLO ───────────────────────────────────────────────────────────
-    function runMonteCarlo(n, TEAMS) {
+    function runMonteCarlo(n, TEAMS, realGames) {
       const wins={}, groupFirst={}, groupSecond={}, groupThirdQ={}, groupQ={};
       const r32c={}, r16c={}, qfc={}, sfc={}, finc={};
       TEAMS.forEach(t=>{
@@ -557,7 +579,7 @@
       });
       let last = null;
       for (let i=0; i<n; i++) {
-        const r = runTournament(TEAMS);
+        const r = runTournament(TEAMS, realGames);
         wins[r.champion.id]++;
         // collect all thirds and find best 8
         const thirds = r.groupStages.map(({standings})=>standings[2]).filter(Boolean);
@@ -592,22 +614,58 @@
       const [runNo,setRunNo]       = React.useState(0);
       const [mode,setMode]         = React.useState("1");
       const [mvPct,setMvPct]       = React.useState(40);
+      const [realResults,setRealResults] = React.useState(null);
+      const [loadStatus,setLoadStatus]   = React.useState("");
 
       const alpha = mvPct / 100;
       const TEAMS = React.useMemo(()=>computeStrengths(TEAMS_RAW, alpha), [mvPct]);
       const sortedByStrength = React.useMemo(()=>[...TEAMS].sort((a,b)=>b.strength-a.strength),[TEAMS]);
 
+      const parseCSV = (text) => {
+        const lines = text.trim().split('\n');
+        const headers = lines[0].split(',').map(h=>h.trim().replace(/"/g,''));
+        return lines.slice(1).map(line=>{
+          const vals = line.split(',').map(v=>v.trim().replace(/"/g,''));
+          const obj={};
+          headers.forEach((h,i)=>obj[h]=vals[i]||'');
+          return obj;
+        });
+      };
+
+      const loadResults = React.useCallback(async ()=>{
+        setLoadStatus("loading");
+        try {
+          const [r1,r2] = await Promise.all([
+            fetch('grupos.csv'),
+            fetch('eliminatorias.csv'),
+          ]);
+          if (!r1.ok || !r2.ok) throw new Error("No se encontraron los archivos CSV");
+          const [csv1,csv2] = await Promise.all([r1.text(), r2.text()]);
+          const groupGames = parseCSV(csv1);
+          const koGames    = parseCSV(csv2).filter(r=>r.Estado==="jugado"||r.Estado==="played");
+          const played = groupGames.filter(r=>r.Estado==="jugado"||r.Estado==="played").length;
+          setRealResults({groupGames, koGames});
+          setLoadStatus("ok:"+played);
+          setStats(null); setLastRun(null); setRunNo(0);
+        } catch(e) {
+          setLoadStatus("error");
+        }
+      },[]);
+
+      const playedCount = realResults
+        ? realResults.groupGames.filter(r=>r.Estado==="jugado"||r.Estado==="played").length : 0;
+
       const simulate = React.useCallback(()=>{
         setRunning(true);
         requestAnimationFrame(()=>requestAnimationFrame(()=>{
           if (mode === "1") {
-            const result = runTournament(TEAMS);
+            const result = runTournament(TEAMS, realResults?.groupGames);
             setLastRun(result);
             setStats(null);
             setRunNo(n=>n+1);
             setTab("groups");
           } else {
-            const result = runMonteCarlo(N_SIMS, TEAMS);
+            const result = runMonteCarlo(N_SIMS, TEAMS, realResults?.groupGames);
             setStats(result);
             setLastRun(result.lastResult);
             setRunNo(n=>n+1);
@@ -693,6 +751,20 @@
             {/* AUTHOR */}
             <div className="author-credit" style={{marginTop:14,fontSize:"0.82rem",color:"rgba(255,255,255,0.75)",fontStyle:"normal",letterSpacing:"0.5px"}}>🎲 Autor: Raúl Rojas, Universidad Libre de Berlín</div>
 
+            {/* LOAD RESULTS */}
+            <div style={{marginTop:10}}>
+              <button className={"load-btn"+(loadStatus==="loading"?" loading":"")}
+                onClick={loadResults} disabled={loadStatus==="loading"}>
+                {loadStatus==="loading" ? "⏳ Cargando…" : "📥 Cargar resultados reales"}
+              </button>
+              {loadStatus.startsWith("ok") && (
+                <div className="load-status load-ok">✅ {playedCount} partido{playedCount!==1?"s":""} jugado{playedCount!==1?"s":""} cargado{playedCount!==1?"s":""}</div>
+              )}
+              {loadStatus==="error" && (
+                <div className="load-status load-err">❌ No se encontraron grupos.csv / eliminatorias.csv en el repositorio</div>
+              )}
+            </div>
+
           </div>
 
           {/* ── TABS ── */}
@@ -701,6 +773,7 @@
               {key:"probs",    label:"📊 Probabilidades", hidden: mode==="1"},
               {key:"groups",   label:"⚽ Grupos"},
               {key:"knockout", label:"🥊 Eliminatorias"},
+              {key:"results",  label:"✅ Resultados", hidden: !realResults || playedCount===0},
               {key:"strength", label:"⚙️ Valoraciones"},
             ].filter(t=>!t.hidden).map(t=>(
               <button key={t.key} className={"tab"+(tab===t.key?" active":"")} onClick={()=>setTab(t.key)}>
@@ -1010,6 +1083,43 @@
                   </div>
                 )
               )}
+            </div>
+          )}
+
+          {/* ── RESULTADOS TAB ── */}
+          {tab==="results" && (
+            <div className="section">
+              <div style={{marginTop:20}}>
+                <div className="section-label">Partidos jugados — Fase de Grupos</div>
+                <div className="results-grid">
+                  {GROUPS.map(g=>{
+                    const games = realResults?.groupGames.filter(r=>
+                      r.Grupo===g && (r.Estado==="jugado"||r.Estado==="played")
+                    ) || [];
+                    if (!games.length) return null;
+                    return (
+                      <div key={g} className="results-card">
+                        <div className="results-header">GRUPO {g}</div>
+                        {games.map((game,i)=>{
+                          const flagA = TEAMS.find(t=>t.name===game.Local)?.flag||'';
+                          const flagB = TEAMS.find(t=>t.name===game.Visitante)?.flag||'';
+                          return (
+                            <div key={i} className="result-row">
+                              <div className="result-teams">
+                                <span>{flagA}</span><span>{game.Local}</span>
+                              </div>
+                              <div className="result-score">{game.Goles_Local} — {game.Goles_Visitante}</div>
+                              <div className="result-away">
+                                <span>{game.Visitante}</span><span>{flagB}</span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
           )}
 
