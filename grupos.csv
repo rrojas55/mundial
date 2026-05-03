@@ -1,0 +1,73 @@
+﻿Grupo,Local,Visitante,Goles_Local,Goles_Visitante,Estado
+A,México,Sudáfrica,,,pendiente
+A,Corea del Sur,Chequia,,,pendiente
+A,México,Corea del Sur,,,pendiente
+A,Sudáfrica,Chequia,,,pendiente
+A,Chequia,México,,,pendiente
+A,Sudáfrica,Corea del Sur,,,pendiente
+B,Canadá,Bosnia,,,pendiente
+B,Catar,Suiza,,,pendiente
+B,Canadá,Catar,,,pendiente
+B,Bosnia,Suiza,,,pendiente
+B,Suiza,Canadá,,,pendiente
+B,Bosnia,Catar,,,pendiente
+C,Brasil,Marruecos,,,pendiente
+C,Escocia,Haití,,,pendiente
+C,Brasil,Escocia,,,pendiente
+C,Marruecos,Haití,,,pendiente
+C,Haití,Brasil,,,pendiente
+C,Marruecos,Escocia,,,pendiente
+D,EE.UU.,Australia,,,pendiente
+D,Paraguay,Turquía,,,pendiente
+D,EE.UU.,Paraguay,,,pendiente
+D,Australia,Turquía,,,pendiente
+D,Turquía,EE.UU.,,,pendiente
+D,Australia,Paraguay,,,pendiente
+E,Alemania,Ecuador,,,pendiente
+E,Costa de Marfil,Curazao,,,pendiente
+E,Alemania,Costa de Marfil,,,pendiente
+E,Ecuador,Curazao,,,pendiente
+E,Curazao,Alemania,,,pendiente
+E,Ecuador,Costa de Marfil,,,pendiente
+F,Países Bajos,Japón,,,pendiente
+F,Túnez,Eslovaquia,,,pendiente
+F,Países Bajos,Túnez,,,pendiente
+F,Japón,Eslovaquia,,,pendiente
+F,Eslovaquia,Países Bajos,,,pendiente
+F,Túnez,Japón,,,pendiente
+G,Bélgica,Irán,,,pendiente
+G,Egipto,Nueva Zelanda,,,pendiente
+G,Bélgica,Egipto,,,pendiente
+G,Irán,Nueva Zelanda,,,pendiente
+G,Nueva Zelanda,Bélgica,,,pendiente
+G,Irán,Egipto,,,pendiente
+H,España,Uruguay,,,pendiente
+H,Arabia Saudita,Cabo Verde,,,pendiente
+H,España,Arabia Saudita,,,pendiente
+H,Uruguay,Cabo Verde,,,pendiente
+H,Cabo Verde,España,,,pendiente
+H,Arabia Saudita,Uruguay,,,pendiente
+I,Francia,Senegal,,,pendiente
+I,Noruega,Irak,,,pendiente
+I,Francia,Noruega,,,pendiente
+I,Senegal,Irak,,,pendiente
+I,Irak,Francia,,,pendiente
+I,Senegal,Noruega,,,pendiente
+J,Argentina,Jordania,,,pendiente
+J,Argelia,Austria,,,pendiente
+J,Argentina,Argelia,,,pendiente
+J,Jordania,Austria,,,pendiente
+J,Austria,Argentina,,,pendiente
+J,Argelia,Jordania,,,pendiente
+K,Inglaterra,Colombia,,,pendiente
+K,Panamá,Uzbekistán,,,pendiente
+K,Inglaterra,Panamá,,,pendiente
+K,Colombia,Uzbekistán,,,pendiente
+K,Uzbekistán,Inglaterra,,,pendiente
+K,Panamá,Colombia,,,pendiente
+L,Portugal,Croacia,,,pendiente
+L,Ghana,Bolivia,,,pendiente
+L,Portugal,Ghana,,,pendiente
+L,Croacia,Bolivia,,,pendiente
+L,Bolivia,Portugal,,,pendiente
+L,Ghana,Croacia,,,pendiente
