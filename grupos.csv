@@ -1,10 +1,10 @@
 ﻿Grupo,Local,Visitante,Goles_Local,Goles_Visitante,Estado
-A,México,Sudáfrica,2,1,pendiente
-A,Corea del Sur,Chequia,1,1,pendiente
-A,México,Corea del Sur,2,1,pendiente
-A,Sudáfrica,Chequia,1,1,pendiente
-A,Chequia,México,1,2,pendiente
-A,Sudáfrica,Corea del Sur,,,pendiente
+A,México,Sudáfrica,2,1,jugado
+A,Corea del Sur,Chequia,1,1,jugado
+A,México,Corea del Sur,2,1,jugado
+A,Sudáfrica,Chequia,1,1,jugado
+A,Chequia,México,1,2,jugado
+A,Sudáfrica,Corea del Sur,1,1,jugado
 B,Canadá,Bosnia,,,pendiente
 B,Catar,Suiza,,,pendiente
 B,Canadá,Catar,,,pendiente
