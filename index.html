@@ -622,10 +622,11 @@
       const sortedByStrength = React.useMemo(()=>[...TEAMS].sort((a,b)=>b.strength-a.strength),[TEAMS]);
 
       const parseCSV = (text) => {
-        const lines = text.trim().split('\n');
-        const headers = lines[0].split(',').map(h=>h.trim().replace(/"/g,''));
+        const clean = text.charCodeAt(0)===0xFEFF ? text.slice(1) : text;
+        const lines = clean.trim().split('\n');
+        const headers = lines[0].split(',').map(h=>h.trim().replace(/"/g,'').replace(/\r/g,''));
         return lines.slice(1).map(line=>{
-          const vals = line.split(',').map(v=>v.trim().replace(/"/g,''));
+          const vals = line.split(',').map(v=>v.trim().replace(/"/g,'').replace(/\r/g,''));
           const obj={};
           headers.forEach((h,i)=>obj[h]=vals[i]||'');
           return obj;
