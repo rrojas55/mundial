@@ -1,9 +1,9 @@
 ﻿Grupo,Local,Visitante,Goles_Local,Goles_Visitante,Estado
-A,México,Sudáfrica,,,pendiente
-A,Corea del Sur,Chequia,,,pendiente
-A,México,Corea del Sur,,,pendiente
-A,Sudáfrica,Chequia,,,pendiente
-A,Chequia,México,,,pendiente
+A,México,Sudáfrica,2,1,pendiente
+A,Corea del Sur,Chequia,1,1,pendiente
+A,México,Corea del Sur,2,1,pendiente
+A,Sudáfrica,Chequia,1,1,pendiente
+A,Chequia,México,1,2,pendiente
 A,Sudáfrica,Corea del Sur,,,pendiente
 B,Canadá,Bosnia,,,pendiente
 B,Catar,Suiza,,,pendiente
